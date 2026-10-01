@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg-primary: #050505;
+  --color-bg-secondary: #0D0D0D;
+  --color-panel: #121212;
+  --color-border: rgba(255, 255, 255, 0.08);
+
+  --color-purple-accent: #7B2CFF;
+  --color-pink-accent: #FF0055;
+  --color-cyan-accent: #00D9FF;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B3B3B3;
+
+  --radius-xl: 18px;
+  --radius-2xl: 18px;
+  --radius-3xl: 18px;
+
+  --blur-md: 24px;
+  --blur-xl: 24px;
+
+  --shadow-custom: 0 0 30px rgba(123, 44, 255, 0.25);
+
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+  * {
+    transition: all 220ms ease;
+  }
+  body {
+    @apply bg-bg-primary text-text-primary font-sans antialiased;
+  }
+}
+
+.gradient-accent {
+  @apply bg-gradient-to-r from-pink-accent via-purple-accent to-cyan-accent;
+}
+
+.card-blur {
+  @apply bg-panel/80 backdrop-blur-md border border-border shadow-custom;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

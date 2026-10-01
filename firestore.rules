@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'jacxas@gmail.com' && request.auth.token.email_verified == true
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Test collection for connection check
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // Sessions
+    match /sessions/{sessionId} {
+      function isValidSession(data) {
+        return data.userId == request.auth.uid 
+          && data.startAt is timestamp
+          && data.minerEnabled is bool;
+      }
+
+      allow read: if isSignedIn() && existing().userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidSession(incoming());
+      allow update: if isSignedIn() && existing().userId == request.auth.uid && isValidSession(incoming());
+      allow delete: if false;
+    }
+
+    // VPN Servers
+    match /vpn_servers/{serverId} {
+      function isValidVPNServer(data) {
+        return data.keys().hasAll(['id', 'name', 'country', 'ip'])
+          && data.id is string && data.name is string && data.ip is string;
+      }
+
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // AI Preferences
+    match /ai_preferences/{prefId} {
+      function isValidAIPreference(data) {
+        return data.userId == request.auth.uid
+          && data.summarizationDepth is number
+          && data.assistantMode is string;
+      }
+
+      allow read: if isSignedIn() && existing().userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidAIPreference(incoming());
+      allow update: if isSignedIn() && existing().userId == request.auth.uid && isValidAIPreference(incoming());
+      allow delete: if false;
+    }
+  }
+}

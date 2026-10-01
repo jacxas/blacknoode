@@ -1,0 +1,21 @@
+name: build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Install
+        run: pnpm install
+      - name: Build renderer
+        run: pnpm build:renderer
+      - name: Build electron (linux)
+        run: pnpm build:electron
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release/*

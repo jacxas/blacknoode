@@ -1,0 +1,6 @@
+{
+  "name": "BLACKNODE",
+  "description": "Autonomous AI Browser Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["AI Assistant", "VPN Management", "Mining Control"]
+}

@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "BrowsingSession": {
+      "title": "Browsing Session",
+      "description": "Records of a user's web browsing activity including mining stats and VPN usage.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "startAt": { "type": "string", "format": "date-time" },
+        "endAt": { "type": "string", "format": "date-time" },
+        "pagesVisited": { "type": "array", "items": { "type": "string" } },
+        "dataUsedMB": { "type": "number" },
+        "minerEnabled": { "type": "boolean" },
+        "minerStats": {
+          "type": "object",
+          "properties": {
+            "hashRateHps": { "type": "number" },
+            "cpuPercent": { "type": "number" },
+            "gpuPercent": { "type": "number" }
+          }
+        },
+        "vpnServerId": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "userId", "startAt", "minerEnabled"]
+    },
+    "VPNServer": {
+      "title": "VPN Server",
+      "description": "Available VPN server locations and their status.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "country": { "type": "string" },
+        "city": { "type": "string" },
+        "ip": { "type": "string" },
+        "regionCode": { "type": "string" },
+        "latencyMs": { "type": "number" },
+        "loadPercent": { "type": "number" },
+        "protocols": { "type": "array", "items": { "type": "string" } },
+        "supportsP2P": { "type": "boolean" },
+        "priceTier": { "type": "string", "enum": ["free", "premium"] }
+      },
+      "required": ["id", "name", "country", "ip"]
+    },
+    "AIPreference": {
+      "title": "AI Preference",
+      "description": "User specific configurations for the AI assistant.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "assistantMode": { "type": "string", "enum": ["concise", "detailed", "creative", "privacy-first"] },
+        "summarizationDepth": { "type": "number" },
+        "autoBlockRisky": { "type": "boolean" },
+        "allowTelemetry": { "type": "boolean" },
+        "preferredVoice": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "assistantMode", "summarizationDepth"]
+    }
+  },
+  "firestore": {
+    "sessions": {
+      "schema": "BrowsingSession",
+      "description": "User browsing sessions"
+    },
+    "vpn_servers": {
+      "schema": "VPNServer",
+      "description": "Available VPN servers"
+    },
+    "ai_preferences": {
+      "schema": "AIPreference",
+      "description": "User AI settings"
+    }
+  }
+}
